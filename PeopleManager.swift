@@ -17,41 +17,68 @@ class PeopleManager : NSObject, CLLocationManagerDelegate  {
     var _peopleAround: [PeopleAround] = []
     var _userSelf: User!
     var _errorStr: String? = nil
+    var _locationManager: CLLocationManager!
     
-    var locationManager: CLLocationManager!
+    // firebase
+    let _peopleAroundRef: Firebase
+    let _userSelfRef : Firebase
+    let _chatSelfRef : Firebase
+    let _nudgeSelfRef : Firebase
     
     
-    init(vc: PeopleViewController, userSelf: User) {
+    func setVC(vc: PeopleViewController) {
         
-        super.init()
-
         _vc = vc
+    }
+    
+    
+    func dispose() {
+        
+        _vc = nil
+        _peopleAround = []
+        _locationManager.delegate = nil
+        _locationManager.stopUpdatingLocation()
+        
+        _peopleAroundRef.removeAllObservers()
+        _userSelfRef.removeAllObservers()
+        _chatSelfRef.removeAllObservers()
+        _nudgeSelfRef.removeAllObservers()
+    }
+    
+    
+    init(userSelf: User) {
+        
         _userSelf = userSelf
         
+        //firebase ref
+        _peopleAroundRef = Global.FirebaseRef.childByAppendingPath(Global.PeopleAroundPath)
+        _userSelfRef = Global.FirebaseRef.childByAppendingPath(Global.UserPath).childByAppendingPath(_userSelf._userID)
+        _chatSelfRef = Global.FirebaseRef.childByAppendingPath(Global.ChatPath).childByAppendingPath(_userSelf._userID)
+        _nudgeSelfRef = Global.FirebaseRef.childByAppendingPath(Global.NudgePath).childByAppendingPath(_userSelf._userID)
+        
+        super.init()
+        
         // init location
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-        
-        // firebase stuff
-        setFirebase()
+        _locationManager = CLLocationManager()
+        _locationManager.delegate = self
+        _locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        _locationManager.requestWhenInUseAuthorization()
+        _locationManager.startUpdatingLocation()
     }
     
     
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func _locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         
     }
     
     
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+    func _locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("error:\(error.localizedDescription)")
         
     }
     
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func _locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         //print("LOCATION: \((locations.first?.coordinate.latitude)!), \((locations.first?.coordinate.longitude)!)")
         let latitude = String(stringInterpolationSegment: (locations.first?.coordinate.latitude)!)
@@ -68,11 +95,10 @@ class PeopleManager : NSObject, CLLocationManagerDelegate  {
     }
     
     
-    private func setFirebase() {
+    func setFirebase() {
         
-        let userRef = Global.FirebaseRef.childByAppendingPath(Global.UserPath)
-        let userSelfRef = userRef.childByAppendingPath(_userSelf._userID)
-        userSelfRef.observeSingleEventOfType(.Value, withBlock: {
+        
+        _userSelfRef.observeSingleEventOfType(.Value, withBlock: {
             snapShot in
             if snapShot.value is NSNull {
                 self.initUserAndNudgeAndChat() // also include observe but in its callback
@@ -88,15 +114,12 @@ class PeopleManager : NSObject, CLLocationManagerDelegate  {
     
     private func observeChat() {
         
-        let chatRef = Global.FirebaseRef.childByAppendingPath(Global.ChatPath)
-        let chatSelfRef = chatRef.childByAppendingPath(_userSelf._userID)
-        
-        chatSelfRef.observeEventType(.ChildChanged, withBlock: {
+        _chatSelfRef.observeEventType(.ChildChanged, withBlock: {
             snapShot in
             self.chatChangedEventHandler(snapShot)
         })
         
-        chatSelfRef.observeEventType(.ChildAdded, withBlock: {
+        _chatSelfRef.observeEventType(.ChildAdded, withBlock: {
             snapShot in
             self.chatAddedEventHandler(snapShot)
         })
@@ -117,15 +140,12 @@ class PeopleManager : NSObject, CLLocationManagerDelegate  {
     
     private func observeNudge() {
         
-        let nudgeRef = Global.FirebaseRef.childByAppendingPath(Global.NudgePath)
-        let nudgeSelfRef = nudgeRef.childByAppendingPath(_userSelf._userID)
-
-        nudgeSelfRef.observeEventType(.ChildChanged, withBlock: {
+        _nudgeSelfRef.observeEventType(.ChildChanged, withBlock: {
             snapShot in
             self.nudgeChangedEventHandler(snapShot)
         })
         
-        nudgeSelfRef.observeEventType(.ChildAdded, withBlock: {
+        _nudgeSelfRef.observeEventType(.ChildAdded, withBlock: {
             snapShot in
             self.nudgeAddedEventHandler(snapShot)
         })
@@ -180,13 +200,13 @@ class PeopleManager : NSObject, CLLocationManagerDelegate  {
     
     private func observePeopleAround() {
         
-        let peopleAroundRef = Global.FirebaseRef.childByAppendingPath(Global.PeopleAroundPath)
-        peopleAroundRef.observeEventType(.ChildChanged, withBlock: {
+        
+        _peopleAroundRef.observeEventType(.ChildChanged, withBlock: {
             snapShot in
             self.peopleChangedEventHandler(snapShot)
         })
         
-        peopleAroundRef.observeEventType(.ChildAdded, withBlock: {
+        _peopleAroundRef.observeEventType(.ChildAdded, withBlock: {
             snapShot in
             self.peopleAddedEventHandler(snapShot)
         })
@@ -271,13 +291,13 @@ class PeopleManager : NSObject, CLLocationManagerDelegate  {
     
     private func failtoSetFirebase() {
         
-        _vc.initializeManagerCompleted()
+        _vc.setFirebaseCompleted()
     }
     
     
     private func setFirebaseCompleted() {
         
-        _vc.initializeManagerCompleted()
+        _vc.setFirebaseCompleted()
     }
 }
 

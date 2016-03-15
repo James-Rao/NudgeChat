@@ -65,6 +65,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="6kE-3C-1TS"/>
                     <connections>
+                        <outlet property="_logInButton" destination="cGP-U4-GiA" id="dJ5-Ux-Msz"/>
                         <outlet property="emailTextField" destination="ZxT-a0-xrj" id="9HL-4C-tH5"/>
                         <outlet property="passwordTextField" destination="cGK-28-wAK" id="xT2-Jo-6vB"/>
                         <segue destination="2gr-y8-5Y7" kind="presentation" identifier="fromLogIntoPeople" modalTransitionStyle="flipHorizontal" id="b7P-dQ-ipB"/>
@@ -129,6 +130,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="r3d-VJ-2Z2"/>
                     <connections>
+                        <outlet property="_signUpButton" destination="KAk-zS-Hvb" id="BE2-Lg-Eq2"/>
                         <outlet property="confirmPasswordTextField" destination="rZ0-E7-1QL" id="YmO-cq-b9D"/>
                         <outlet property="emailTextField" destination="mIv-4g-uGc" id="nin-YH-TEi"/>
                         <outlet property="passwordTextField" destination="pPh-sI-POy" id="ZCo-Vz-y12"/>
@@ -177,6 +179,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="_verifyButton" destination="jMU-QH-RbY" id="7Ut-58-vfZ"/>
                         <outlet property="verificationTextField" destination="tlw-jo-N1c" id="vd0-6T-irP"/>
                         <segue destination="bOF-I3-psZ" kind="show" identifier="fromVerificationtoProfileSetting" id="Rdh-cM-Aod"/>
                     </connections>
@@ -595,20 +598,21 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="V88-Iy-6Fb" firstAttribute="trailing" secondItem="QRl-nr-GuW" secondAttribute="trailing" id="1XD-Vi-w2a"/>
                             <constraint firstItem="QRl-nr-GuW" firstAttribute="trailing" secondItem="Fyd-86-epK" secondAttribute="trailingMargin" id="6dw-cD-Sbs"/>
+                            <constraint firstItem="V88-Iy-6Fb" firstAttribute="top" secondItem="Rvh-jV-lKc" secondAttribute="bottom" id="7lU-8S-FZ0"/>
+                            <constraint firstItem="V88-Iy-6Fb" firstAttribute="leading" secondItem="s7D-ya-aiQ" secondAttribute="leading" id="BHj-xz-sKf"/>
                             <constraint firstItem="s7D-ya-aiQ" firstAttribute="baseline" secondItem="QRl-nr-GuW" secondAttribute="baseline" id="H0x-SF-q26"/>
-                            <constraint firstItem="V88-Iy-6Fb" firstAttribute="leading" secondItem="s7D-ya-aiQ" secondAttribute="leading" id="KO2-O5-jdb"/>
-                            <constraint firstItem="QRl-nr-GuW" firstAttribute="top" secondItem="V88-Iy-6Fb" secondAttribute="bottom" constant="8" symbolic="YES" id="Npx-ew-DHv"/>
+                            <constraint firstItem="QRl-nr-GuW" firstAttribute="top" secondItem="V88-Iy-6Fb" secondAttribute="bottom" constant="8" symbolic="YES" id="I4C-Pi-xiR"/>
                             <constraint firstAttribute="bottom" secondItem="s7D-ya-aiQ" secondAttribute="bottom" constant="20" symbolic="YES" id="VCD-Uc-e8R"/>
-                            <constraint firstItem="V88-Iy-6Fb" firstAttribute="trailing" secondItem="QRl-nr-GuW" secondAttribute="trailing" id="ZaU-MF-UyE"/>
                             <constraint firstItem="s7D-ya-aiQ" firstAttribute="leading" secondItem="Fyd-86-epK" secondAttribute="leadingMargin" id="d78-Sf-Ht9"/>
                             <constraint firstItem="QRl-nr-GuW" firstAttribute="leading" secondItem="s7D-ya-aiQ" secondAttribute="trailing" constant="8" symbolic="YES" id="fi1-do-fez"/>
-                            <constraint firstItem="V88-Iy-6Fb" firstAttribute="top" secondItem="Fyd-86-epK" secondAttribute="top" constant="20" symbolic="YES" id="qME-Cm-Cwl"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="_chatTableView" destination="V88-Iy-6Fb" id="N3R-x4-pog"/>
                         <outlet property="_messageTextField" destination="s7D-ya-aiQ" id="l9W-Gr-NrY"/>
+                        <outlet property="_sendButton" destination="QRl-nr-GuW" id="2dy-lW-fOZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rXg-ZM-zFb" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -708,7 +712,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="vkN-Ko-E3q"/>
-        <segue reference="b7P-dQ-ipB"/>
+        <segue reference="kEY-pt-Q5W"/>
         <segue reference="aRx-b6-kwE"/>
     </inferredMetricsTieBreakers>
 </document>

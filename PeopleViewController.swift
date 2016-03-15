@@ -25,14 +25,13 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     // initialize
     func initialize(userSelf: User) {
-        
-        view.userInteractionEnabled = false // false at the beginning
-        _manager = PeopleManager(vc: self, userSelf: userSelf)
+
+        _manager = PeopleManager(userSelf: userSelf)
     }
     
     
     
-    func initializeManagerCompleted() {
+    func setFirebaseCompleted() {
         
         if _manager._errorStr == nil {
             view.userInteractionEnabled = true
@@ -41,8 +40,30 @@ class PeopleViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
+    
+    override func viewWillDisappear(animated: Bool) {
+        
+        super.viewWillDisappear(animated)
+        _manager.dispose()
+    }
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        
+        super.viewWillAppear(animated)
+        
+        view.userInteractionEnabled = false // false at the beginning
+        
+        //
+        _manager.setVC(self)
+        _manager.setFirebase()
+    }
+    
 
     override func viewDidLoad() {
+        
+        
+        print("7777")
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.

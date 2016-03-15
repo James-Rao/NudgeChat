@@ -48,10 +48,12 @@ class ProfileSettingViewController: UIViewController {
         _manager = ProfileSettingManager(vc: self, email: email, password : password)
     }
     
-    func initManagerCompleted() {
+    
+    func setFirebaseCompleted() {
         
         if _manager!._errorStr.isEmpty {
             view.userInteractionEnabled = true
+            performSegueWithIdentifier(_segueIdentifier, sender: self)
         } else {
             print(_manager!._errorStr)
         }
@@ -64,8 +66,8 @@ class ProfileSettingViewController: UIViewController {
             return
         }
         
-        print("enter set user")
-        performSegueWithIdentifier(_segueIdentifier, sender: self)
+        _manager?.setFirebase()
+
     }
     
     

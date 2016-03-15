@@ -9,103 +9,77 @@
 import UIKit
 import Firebase
 
-class LogInViewController: UIViewController{
+class LogInViewController: UIViewController {
     
     // controls
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var _logInButton: UIButton!
     
     // property
     var _manager: LogInManager!
     let _fromLogIntoPeopleIdentifier = "fromLogIntoPeople"
+    var _isKeyboardShow  = false
+    var _offset: CGFloat = 0
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         _manager = LogInManager(vc: self)
         
-//        var upvotesRef = Global.FirebaseRef.childByAppendingPath("abc")
-//        print(upvotesRef)
-//        upvotesRef.observeEventType(.ChildChanged, withBlock: {
-//            snapShot in
-//            print("get changed")
-//        })
-//        
-//        upvotesRef.observeEventType(.ChildAdded, withBlock: {
-//                snapShot in
-//                print("get added")
-//        })
+        //Looks for single or multiple taps.
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        view.addGestureRecognizer(tap)
         
-//        var upvotesRef = Global.FirebaseRef.childByAppendingPath("agfgsfd")
-//        upvotesRef.runTransactionBlock({
-//            (var currentData:FMutableData!) in
-//            print("agfsdf")
-//            print("\(currentData)")
-//            print("\(currentData.value)")
-//            var value = currentData.value as? Int
-//            if value == nil {
-//                value = 0
-//            }
-//            currentData.value = value! + 1
-//            return FTransactionResult.successWithValue(currentData)
-//        })
-//
-//        var hopperRef = Global.FirebaseRef.childByAppendingPath("gracehop")
-//        var nickname = ["nickname": "Amazing Grace"]
-////        var nickname2 = ["nickname2": "Amazing Grace2"]
-//        hopperRef.updateChildValues(nickname)
+        //
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    
+    // later in your class:
+    func keyboardWillShow(notification: NSNotification) {
         
-//        var nickRef = hopperRef.childByAppendingPath("nickname")
-//        var nickname2 = ["nickname2": "Amazing Grace2"]
-//        
-//        nickRef.updateChildValues(nickname2)
+        let frame = notification.userInfo![UIKeyboardFrameEndUserInfoKey]!.CGRectValue
+        // do stuff with the frame...
+        print(frame)
+        if !_isKeyboardShow {
+            adjustFrametoShowNecessaryElements(frame.origin.y)
+            _isKeyboardShow = true
+        }
+    }
+    
+    
+    func keyboardWillHide(notification : NSNotification ) {
         
-        // when grand child changed, the node can capture it too.
-//        var chatSelfRef = Global.FirebaseRef.childByAppendingPath("mychat")
-//        chatSelfRef.updateChildValues(["a":["a1":1, "a2":1]])
-//        
-//        chatSelfRef.observeEventType(.ChildChanged, withBlock: {
-//            snapShot in
-//            print(snapShot)
-//        })
-
+        _isKeyboardShow = false
+        self.view.frame.origin.y = 0
+    }
+    
+    
+    private func adjustFrametoShowNecessaryElements(keyboardY: CGFloat) {
         
-        // Do any additional setup after loading the view, typically from a ni
-//        
-//        authHandler = Global.FirebaseRef.observeAuthEventWithBlock { authData in
-//            
-//            if authData != nil {
-//                print("it is too late")
-//                //Global.FirebaseRef.removeAuthEventObserverWithHandle(self.authHandler!)
-//            } else {
-//                print("exit ???")
-//            }
-//        }
-//        
-// 
-//        
-//        
-//        Firebase(url: "https://nudgechat.firebaseio.com/friends/257").observeEventType(.Value, withBlock: {
-//            snapShot in
-//            if snapShot == nil {
-//                print("nothing")
-//            } else {
-//                if snapShot.value == nil {
-//                    print("777")
-//                } else {
-//                    
-//                    print("888")
-//                    
-//                    if snapShot.value is NSNull
-//                    {
-//                        print("9999")
-//                    } else {
-//                        print("101010")
-//                    }
-//                }
-//                print(snapShot.value)
-//            }
-//        })
+        //let referenceY = passwordTextField.frame.origin.y
+        let referenceY = _logInButton.frame.origin.y
+        let referenceHeight = _logInButton.bounds.size.height
+        
+        let distance = keyboardY - referenceY
+        
+        if distance > 0 && distance < Global.DefaultDistance + referenceHeight {
+            _offset = Global.DefaultDistance - distance + referenceHeight
+            self.view.frame.origin.y -= _offset
+        } else if distance < 0 {
+            _offset = abs(distance) + Global.DefaultDistance + referenceHeight
+            self.view.frame.origin.y -= _offset
+        }
+    }
+    
+    
+    //Calls this function when the tap is recognized.
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
     }
     
 

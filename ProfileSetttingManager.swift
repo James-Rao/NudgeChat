@@ -25,8 +25,6 @@ class ProfileSettingManager {
         _vc = vc
         _email = email
         _password = password
-        
-        setFirebase()
     }
     
     
@@ -66,17 +64,17 @@ class ProfileSettingManager {
     
     
     private func failtoCreateUser() {
-        _vc.initManagerCompleted()
+        _vc.setFirebaseCompleted()
     }
     
     
     private func failtoAuthUser() {
         
-        _vc.initManagerCompleted()
+        _vc.setFirebaseCompleted()
     }
     
     
     private func succeedtoAuthUser() {
-        _vc.initManagerCompleted()
+        _vc.setFirebaseCompleted()
     }
 }

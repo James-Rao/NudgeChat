@@ -13,6 +13,8 @@ import Firebase
 
 class Global {
     
+    static let DefaultDistance = CGFloat(0)
+    static let DefaultDistance1 = CGFloat(8)
     static let AnyStr = "anything"
     static let FirebaseRef = Firebase(url: "https://nudgechat.firebaseio.com")
     

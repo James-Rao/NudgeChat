@@ -107,6 +107,17 @@ class NudgeViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+
+        print("select item: \(indexPath.row)")
+        let nudges = _manager._nudges
+        let nudgeItem = nudges[indexPath.row]
+        _selectedNudger = nudgeItem
+        
+        performSegueWithIdentifier(_fromNudgetoChatSegueIdentifier, sender: _selectedNudger)
+    }
+    
+    
 
     // for the table view
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -129,7 +140,7 @@ class NudgeViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let friendItem = friends[indexPath.row]
         _selectedFriend = friendItem
         
-        performSegueWithIdentifier(_fromNudgetoChatSegueIdentifier, sender: self)
+        performSegueWithIdentifier(_fromNudgetoChatSegueIdentifier, sender: _selectedNudger)
     }
     
     
@@ -144,7 +155,7 @@ class NudgeViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         } else if segue!.identifier == _fromNudgetoChatSegueIdentifier {
             if let vc = segue!.destinationViewController as? ChatViewController {
-                vc.initialize(_selectedFriend, userSelf: _manager._userSelf)
+                vc.initialize(sender as! User, userSelf: _manager._userSelf)
             } else {
                 print("not a navigator")
             }
